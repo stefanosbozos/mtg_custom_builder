@@ -17,7 +17,7 @@ class DeckBuilder:
         self.deck = dict()                  # Stores the user's database
         self.magic_build = dict()           # Stores the user's created card build
 
-    def __populate_database(self, file_path: str) -> bool:
+    def _populate_database(self, file_path: str) -> bool:
         """
         Populates the card database with the given items of a .csv or .txt file.
         The input should only be comma separated values in order to provide correct output.
@@ -48,7 +48,7 @@ class DeckBuilder:
         for row in file_reader:
             self.deck[row[0].upper()] = (row[1], 0)
 
-    def __print_deck(self) -> None:
+    def _print_deck(self) -> None:
         """
         Prints all the elements of the provided card database. The elements
         are being showed 10 at a time.
@@ -68,7 +68,7 @@ class DeckBuilder:
 
         input("\n\n\nEnd of list.\nPress 'Enter' to continue...")
 
-    def __add_card_to_deck_build(self, card_name: str, number_of_times: int) -> None:
+    def _add_card_to_deck_build(self, card_name: str, number_of_times: int) -> None:
         """
         Adds a new card to the current build. The card name is the key, and the value
         is a tuple containing the card code and the number that this card occurs in the
@@ -93,7 +93,7 @@ class DeckBuilder:
             print("Card {} does not exist in the database. "
                   "Please try another card or check the spelling.".format(card_name))
 
-    def __decrease_number_of_occurrence(self, card_name: str, number_of_times: int) -> None:
+    def _decrease_number_of_occurrence(self, card_name: str, number_of_times: int) -> None:
         """
         Decreases the times that a card is being repeated from the build by as given number
         from the user. The given number should not be greater than the card number of occurrences.
@@ -105,23 +105,25 @@ class DeckBuilder:
         card_name = card_name.upper()
 
         if card_name in self.magic_build:
-            if self.magic_build[card_name][1] - number_of_times >= 0:
+            if (self.magic_build[card_name][1] + 1) > number_of_times:
                 self.magic_build[card_name] = (self.magic_build[card_name][0],
                                                self.magic_build[card_name][1] - number_of_times)
 
-                print("Card {} occurrence has decreased to {}.\n{}: \t{}".format(
+                print("Card {} occurrence has decreased to {}.\n{}: \t{} ".format(
                     card_name,
                     self.magic_build[card_name][1],
                     card_name,
                     self.magic_build[card_name][0]
                 ))
+            elif self.magic_build[card_name][1] == number_of_times:
+                self._remove_card_from_deck_build(card_name)
             else:
                 print("ERROR: Number provided more that the times that the card occurs in your build.\n"
                       "Accepted number for card {} is {}".format(card_name, self.magic_build[card_name][1]))
 
         self.__continue_to_next_screen()
 
-    def __remove_card_from_deck_build(self, card_name: str) -> None:
+    def _remove_card_from_deck_build(self, card_name: str) -> None:
         """
         Completely removes a card from the current deck build.
 
@@ -138,7 +140,7 @@ class DeckBuilder:
 
         self.__continue_to_next_screen()
 
-    def __print_current_build(self) -> None:
+    def _print_current_build(self) -> None:
         """
         Prints the add card with their codes that the user has added so far in the
         current deck build.
@@ -150,7 +152,7 @@ class DeckBuilder:
 
         print('=' * 10, 'YOUR BUILD LIST', '=' * 10)
         for key in self.magic_build:
-            print("{}: \t{}".format(key, (self.magic_build[key][0] * self.magic_build[key][1])))
+            print("{} :\t {}".format(key, (self.magic_build[key][0] + " ") * self.magic_build[key][1]))
 
             if number_of_items_on_screen == items_on_screen_limit:
                 input("Press 'Enter' to show more...")
@@ -158,7 +160,7 @@ class DeckBuilder:
 
         input("\n\n\nEnd of list.\nPress 'Enter' to continue...")
 
-    def __write_current_build_to_file(self, directory_path: str, file_name: str) -> None:
+    def _write_current_build_to_file(self, directory_path: str, file_name: str) -> None:
         """
         Saves the current deck build to a .txt file. The path and the name of the file
         are being provided by the user.
@@ -171,14 +173,13 @@ class DeckBuilder:
         sequence = ('=' * 30) + ' YOUR BUILD LIST ' + ('=' * 30) + "\n\n"
 
         for key in self.magic_build:
-            # sequence += (key + " : " + ((self.deck[key][0] + " ") * self.deck[key][1]) + '\n')
-            sequence += "{}: \t{}".format(key, (self.magic_build[key][0] * self.magic_build[key][1])) + "\n"
+            sequence += "{}: \t{} ".format(key, (self.magic_build[key][0] + " ") * self.magic_build[key][1]) + "\n"
 
         file_to_write.write(sequence)
         file_to_write.close()
         print("\n\nYour file has been saved at this location:\n{}".format(file_full_path))
 
-    def __is_database_empty(self) -> bool:
+    def _is_database_empty(self) -> bool:
         """
         Checks if the user has provided a card database.
         :return: A boolean True if the card database length is not 0

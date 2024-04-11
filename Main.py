@@ -8,6 +8,3 @@ Main class creates an instance of the Application to start it.
 """
 
 app = Application()
-
-
-
