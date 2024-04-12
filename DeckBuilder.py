@@ -65,6 +65,9 @@ class DeckBuilder:
             if number_of_items_on_screen == items_on_screen_limit:
                 input("Press 'Enter' to show more...")
                 number_of_items_on_screen = 0
+                self.__clear_screen()
+                print('=' * 10, 'YOUR DECK', '=' * 10)
+
 
         input("\n\n\nEnd of list.\nPress 'Enter' to continue...")
 
@@ -81,17 +84,23 @@ class DeckBuilder:
         """
         card_name = card_name.upper()
 
-        if card_name in self.deck:
-            if card_name in self.magic_build:
-                self.magic_build[card_name] = (self.magic_build[card_name][0],
-                                               self.magic_build[card_name][1] + number_of_times)
+        if number_of_times > 0:
+            if card_name in self.deck:
+                if card_name in self.magic_build:
+                    self.magic_build[card_name] = (self.magic_build[card_name][0],
+                                                   self.magic_build[card_name][1] + number_of_times)
+                else:
+                    self.magic_build[card_name] = (self.deck[card_name][0],
+                                                   self.deck[card_name][1] + number_of_times)
+                print("\nCard {} has been added to your current build.".format(card_name))
             else:
-                self.magic_build[card_name] = (self.deck[card_name][0],
-                                               self.deck[card_name][1] + number_of_times)
+                self.__clear_screen()
+                print("Card {} does not exist in the database. "
+                      "Please try another card or check the spelling.".format(card_name))
         else:
             self.__clear_screen()
-            print("Card {} does not exist in the database. "
-                  "Please try another card or check the spelling.".format(card_name))
+            print("ERROR: The number of times cannot be 0 or a negative number. Card {} could"
+                  "not be added.".format(card_name))
 
     def _decrease_number_of_occurrence(self, card_name: str, number_of_times: int) -> None:
         """

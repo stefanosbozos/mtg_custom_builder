@@ -1,3 +1,4 @@
+import csv
 import sys
 import os
 
@@ -41,6 +42,8 @@ class Application:
             elif user_input == '7':
                 self.__save_deck_to_txt()
             elif user_input == '8':
+                self.__show_readme()
+            elif user_input == '9':
                 self.__exit_application()
             else:
                 print("\nWrong Input...\nPlease select a number from 1 to 6 as indicated in the menu.")
@@ -192,7 +195,8 @@ class Application:
               "5. Remove card from current build\n"
               "6. Show your current build\n"
               "7. Write current build\n"
-              "8. Exit Application\n")
+              "8. View README file\n"
+              "9. Exit Application\n")
 
     def __show_header(self) -> None:
         """
@@ -210,3 +214,13 @@ class Application:
 #                |___/                                                                      #
 #############################################################################################                                                                                                                              
      """)
+
+    def __show_readme(self) -> None:
+        self.__clear_screen()
+
+        file_name = open("README.txt")
+        file_reader = file_name.read()
+        print(file_reader)
+        file_name.close()
+
+        self.__continue_to_next_screen()
